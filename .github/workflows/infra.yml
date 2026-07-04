@@ -22,13 +22,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: hashicorp/setup-terraform@v3
-
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
+      - name: Extract branch and compute prefix
+        id: branch_info
+        run: |
+            BRANCH=$(echo "${{ github.ref }}" | sed 's|refs/heads/||')
+            FIRST_LETTER=$(echo "$BRANCH" | cut -c1 | tr '[:lower:]' '[:upper:]')
+            echo "BRANCH=$BRANCH" >> $GITHUB_OUTPUT
+            echo "FIRST_LETTER=$FIRST_LETTER" >> $GITHUB_OUTPUT
 
       - run: terraform init
       - run: terraform validate
@@ -39,7 +39,8 @@ jobs:
       
       - name: Terraform Plan (Non-Prod)
         if: github.ref != 'refs/heads/master'
-        run: terraform plan -var-file=tfvars/master.tfvars -var-file=tfvars/nonprod.tfvars
+        run: terraform plan -var-file=tfvars/master.tfvars -var-file=tfvars/nonprod.tfvars -var="branch=${{ steps.branch_info.outputs.FIRST_LETTER }}"
+
       - name: Apply (Master)
         if: github.ref == 'refs/heads/master'
         run: terraform apply -auto-approve -var-file=tfvars/master.tfvars -var-file=tfvars/prod.tfvars
