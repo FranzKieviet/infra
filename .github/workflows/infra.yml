@@ -43,7 +43,7 @@ jobs:
             if [ -z "$BRANCH" ]; then
               BRANCH="${{ github.ref_name }}"
             fi
-            STACK=$(echo "$BRANCH" | cut -c1 | tr '[:lower:]' '[:upper:]')
+            STACK=$(echo "$BRANCH" | cut -c1 | tr '[:upper:]' '[:lower:]')
             echo "BRANCH=$BRANCH" >> $GITHUB_OUTPUT
             echo "STACK=$STACK" >> $GITHUB_OUTPUT
 
