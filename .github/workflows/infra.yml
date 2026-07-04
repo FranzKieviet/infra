@@ -35,16 +35,15 @@ jobs:
       
       - name: Terraform Plan (Master)
         if: github.ref == 'refs/heads/master'
-        run: terraform plan -var-file=master.tfvars -var-file=prod.tfvars
+        run: terraform plan -var-file=tfvars/master.tfvars -var-file=tfvars/prod.tfvars
       
       - name: Terraform Plan (Non-Prod)
         if: github.ref != 'refs/heads/master'
-        run: terraform plan -var-file=nonprod.tfvars
-
+        run: terraform plan -var-file=tfvars/master.tfvars -var-file=tfvars/nonprod.tfvars
       - name: Apply (Master)
         if: github.ref == 'refs/heads/master'
-        run: terraform apply -auto-approve -var-file=master.tfvars -var-file=prod.tfvars
+        run: terraform apply -auto-approve -var-file=tfvars/master.tfvars -var-file=tfvars/prod.tfvars
       
       - name: Apply (Non-Prod)
         if: github.ref != 'refs/heads/master'
-        run: terraform apply -auto-approve -var-file=nonprod.tfvars
+        run: terraform apply -auto-approve -var-file=tfvars/master.tfvars -var-file=tfvars/nonprod.tfvars
