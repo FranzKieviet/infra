@@ -48,7 +48,7 @@ jobs:
             echo "STACK=$STACK" >> $GITHUB_OUTPUT
 
       - name: Terraform init
-        run: terraform init -backend-config="key=busable/${{ steps.branch_info.outputs.BRANCH }}/terraform.tfstate"
+        run: terraform init -backend-config="key=${{ inputs.project }}/${{ steps.branch_info.outputs.BRANCH }}/terraform.tfstate"
       
       - name: Terraform validate
         run: terraform validate
